@@ -15,27 +15,22 @@ def load_data():
 
 region_df, customer_df, transaction_df, store_df = load_data()
 
-# Show columns of StoreMaster to debug column name
-st.write("StoreMaster columns:", store_df.columns.tolist())
+# Filter by Channel
+st.sidebar.header("Filter by Channel")
 
-# After checking the output, replace 'brand' below with the correct column name
-brands = store_df["brand"].dropna().unique()  # <-- Replace 'brand' if needed
+# Check that 'channel' column exists
+if "channel" in store_df.columns:
+    channel_options = store_df["channel"].dropna().unique()
+    selected_channels = st.sidebar.multiselect("Select Channel(s)", options=channel_options, default=channel_options)
 
-st.sidebar.header("Filter by Brand")
-selected_brands = st.sidebar.multiselect("Select Brand(s)", options=brands, default=brands)
+    # Filter store data by selected channels
+    filtered_store = store_df[store_df["channel"].isin(selected_channels)]
 
-filtered_store = store_df[store_df["brand"].isin(selected_brands)]  # <-- Replace 'brand' if needed
+    st.subheader("Filtered StoreMaster by Channel")
+    st.write(filtered_store.reset_index(drop=True))
+else:
+    st.error("⚠️ Column 'channel' not found in StoreMaster sheet. Please check the Excel file.")
 
-st.header("Data Preview")
-
-st.subheader("Region Sheet")
-st.write(region_df.head())
-
-st.subheader("CustomerDetails Sheet")
-st.write(customer_df.head())
-
-st.subheader("Transaction Sheet")
-st.write(transaction_df.head())
-
-st.subheader("Filtered StoreMaster Sheet by Brand")
-st.write(filtered_store.reset_index(drop=True))
+# Optional: show other sheet previews
+st.header("📋 Data Preview")
+with st.expander("Regi
