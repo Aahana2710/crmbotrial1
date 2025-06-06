@@ -13,10 +13,10 @@ def load_data():
 
 customer_df, store_df = load_data()
 
-# Merge customer and store data on locationcode and old store code
-merged_df = customer_df.merge(store_df, left_on="locationcode", right_on="old store code", how="left")
+# Merge on corrected column names
+merged_df = customer_df.merge(store_df, left_on="location_code", right_on="old_store_code", how="left")
 
-# Filters in sidebar
+# Filters
 st.sidebar.header("🔍 Filter Data")
 
 selected_brand = st.sidebar.multiselect(
@@ -39,7 +39,7 @@ selected_pincode = st.sidebar.multiselect(
     "Pincode", options=store_df["pincode"].dropna().unique(), default=store_df["pincode"].dropna().unique()
 )
 
-# Filter dataframe
+# Apply filters
 filtered_df = merged_df[
     (merged_df["brand"].isin(selected_brand)) &
     (merged_df["state"].isin(selected_state)) &
@@ -48,15 +48,16 @@ filtered_df = merged_df[
     (merged_df["pincode"].isin(selected_pincode))
 ]
 
-# Display filtered data
+# Show filtered data
 st.subheader("📋 Filtered Customer Data")
 st.dataframe(filtered_df.reset_index(drop=True))
 
-# Summary
+# Summary stats
 st.markdown("### 📌 Summary")
 col1, col2, col3 = st.columns(3)
 col1.metric("Total Customers", filtered_df.shape[0])
 col2.metric("Unique Cities", filtered_df['city'].nunique())
 col3.metric("Unique Brands", filtered_df['brand'].nunique())
+
 
 
