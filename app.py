@@ -15,13 +15,16 @@ def load_data():
 
 region_df, customer_df, transaction_df, store_df = load_data()
 
-# Brand filter sidebar
+# Show columns of StoreMaster to debug column name
+st.write("StoreMaster columns:", store_df.columns.tolist())
+
+# After checking the output, replace 'brand' below with the correct column name
+brands = store_df["brand"].dropna().unique()  # <-- Replace 'brand' if needed
+
 st.sidebar.header("Filter by Brand")
-brands = store_df["brand"].dropna().unique()
 selected_brands = st.sidebar.multiselect("Select Brand(s)", options=brands, default=brands)
 
-# Filter store_df by selected brands
-filtered_store = store_df[store_df["brand"].isin(selected_brands)]
+filtered_store = store_df[store_df["brand"].isin(selected_brands)]  # <-- Replace 'brand' if needed
 
 st.header("Data Preview")
 
