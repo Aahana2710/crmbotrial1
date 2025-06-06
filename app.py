@@ -7,7 +7,6 @@ st.title("Welcome to CRM Bot")
 @st.cache_data
 def load_data():
     file = "InterconnectedData_Hierarchical.xlsx"
-    # Load all sheets you mentioned
     region = pd.read_excel(file, sheet_name="Region")
     customer = pd.read_excel(file, sheet_name="CustomerDetails")
     transaction = pd.read_excel(file, sheet_name="Transaction")
@@ -16,7 +15,14 @@ def load_data():
 
 region_df, customer_df, transaction_df, store_df = load_data()
 
-# Display loaded data summaries
+# Brand filter sidebar
+st.sidebar.header("Filter by Brand")
+brands = store_df["brand"].dropna().unique()
+selected_brands = st.sidebar.multiselect("Select Brand(s)", options=brands, default=brands)
+
+# Filter store_df by selected brands
+filtered_store = store_df[store_df["brand"].isin(selected_brands)]
+
 st.header("Data Preview")
 
 st.subheader("Region Sheet")
@@ -28,10 +34,5 @@ st.write(customer_df.head())
 st.subheader("Transaction Sheet")
 st.write(transaction_df.head())
 
-st.subheader("StoreMaster Sheet")
-st.write(store_df.head())
-
-
-
-
-
+st.subheader("Filtered StoreMaster Sheet by Brand")
+st.write(filtered_store.reset_index(drop=True))
