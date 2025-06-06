@@ -15,23 +15,25 @@ def load_data():
 
 region_df, customer_df, transaction_df, store_df = load_data()
 
-# Filter by Channel
+# Show available columns for confirmation
+st.write("📌 StoreMaster Columns:", store_df.columns.tolist())
+
+# Filter by Channel (with correct case)
 st.sidebar.header("Filter by Channel")
 
-# Check that 'channel' column exists
-if "channel" in store_df.columns:
-    channel_options = store_df["channel"].dropna().unique()
+if "Channel" in store_df.columns:
+    channel_options = store_df["Channel"].dropna().unique()
     selected_channels = st.sidebar.multiselect("Select Channel(s)", options=channel_options, default=channel_options)
 
     # Filter store data by selected channels
-    filtered_store = store_df[store_df["channel"].isin(selected_channels)]
+    filtered_store = store_df[store_df["Channel"].isin(selected_channels)]
 
     st.subheader("Filtered StoreMaster by Channel")
     st.write(filtered_store.reset_index(drop=True))
 else:
-    st.error("⚠️ Column 'channel' not found in StoreMaster sheet. Please check the Excel file.")
+    st.error("⚠️ Column 'Channel' not found in StoreMaster sheet. Please check the Excel file.")
 
-# Optional: show other sheet previews
+# Preview other data
 st.header("📋 Data Preview")
 with st.expander("Region Sheet"):
     st.write(region_df.head())
@@ -41,4 +43,5 @@ with st.expander("CustomerDetails Sheet"):
 
 with st.expander("Transaction Sheet"):
     st.write(transaction_df.head())
+
 
