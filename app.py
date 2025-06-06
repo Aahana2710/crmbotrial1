@@ -13,14 +13,35 @@ def load_data():
 
 store_df, customer_df = load_data()
 
-# Merge StoreMaster and CustomerDetails
-merged_df = customer_df.merge(
-    store_df,
-    left_on="locationcode",
-    right_on="old store code",
-    how="left"
-)
+# Show available columns to debug
+st.write("🔍 StoreMaster Columns:", store_df.columns.tolist())
+st.write("🔍 CustomerDetails Columns:", customer_df.columns.tolist())
 
+# --- Find correct columns to merge ---
+# Example: Try "Store Code" instead of "old store code"
+possible_keys_store = ["old store code", "Store Code", "storecode"]
+possible_keys_customer = ["locationcode", "Location Code"]
+
+merge_success = False
+for store_key in possible_keys_store:
+    for customer_key in possible_keys_customer:
+        if store_key in store_df.columns and customer_key in customer_df.columns:
+            merged_df = customer_df.merge(
+                store_df,
+                left_on=customer_key,
+                right_on=store_key,
+                how="left"
+            )
+            merge_success = True
+            break
+    if merge_success:
+        break
+
+if not merge_success:
+    st.error("❌ Could not merge data. Please check matching columns between CustomerDetails and StoreMaster.")
+    st.stop()
+
+# Sidebar filters
 st.sidebar.header("Filters")
 
 # Validate filter columns
@@ -52,6 +73,7 @@ else:
 
     st.subheader("Filtered Customer Data")
     st.write(filtered_df.reset_index(drop=True))
+
 
 
 
