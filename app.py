@@ -33,4 +33,12 @@ else:
 
 # Optional: show other sheet previews
 st.header("📋 Data Preview")
-with st.expander("Regi
+with st.expander("Region Sheet"):
+    st.write(region_df.head())
+
+with st.expander("CustomerDetails Sheet"):
+    st.write(customer_df.head())
+
+with st.expander("Transaction Sheet"):
+    st.write(transaction_df.head())
+
